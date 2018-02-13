@@ -74,13 +74,6 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-    w_h=int((width-1)/2)
-    h_h=int((height-1)/2)
-    pi=np.pi
-	
-    a=np.array([[x**2+y**2 for x in range(-w_h,w_h+1)] for y in range(-h_h, h_h+1)])
-    GaussianMatrix=1/(2*pi*sigma**2)*np.exp(-a/(2*sigma**2))
-    return GaussianMatrix
 
 #     gb_kernel=np.zeros((height,width))
 #     for i in range(height):
@@ -89,15 +82,15 @@ def gaussian_blur_kernel_2d(sigma, width, height):
 #     return gb_kernel
     
     
-#     offset_x, offset_y = (width - 1) / 2, (height - 1) / 2
-#     x = np.arange(-offset_x, offset_x + 1, 1.0) ** 2
-#     y = np.arange(-offset_y, offset_y + 1, 1.0) ** 2
-#     coefficient = 1 / (2 * sigma * sigma * np.pi)
-#     gaussian_x = np.sqrt(coefficient) * np.exp(-x / (2 * sigma * sigma))
-#     gaussian_y = np.sqrt(coefficient) * np.exp(-y / (2 * sigma * sigma))
-#     # in two dimensions, it is the product of gaussian_x and gaussian_y, one in each dimension
-#     kernel = np.outer(gaussian_x, gaussian_y) / (np.sum(gaussian_x) * np.sum(gaussian_y))
-#     return kernel
+    offset_x, offset_y = (width - 1) / 2, (height - 1) / 2
+    x = np.arange(-(width-1)/2, (width-1)/2+1)**2
+    y = np.arange(-(height - 1)/2,(height-1)/2+1)**2
+    coefficient = 1/(2*np.pi *sigma**2)
+    gaussian_x = np.sqrt(coefficient) * np.exp(-x / (2 * sigma * sigma))
+    gaussian_y = np.sqrt(coefficient) * np.exp(-y / (2 * sigma * sigma))
+    # in two dimensions, it is the product of gaussian_x and gaussian_y, one in each dimension
+    kernel = np.outer(gaussian_x, gaussian_y) / (np.sum(gaussian_x) * np.sum(gaussian_y))
+    return kernel
      
 
 def low_pass(img, sigma, size):
