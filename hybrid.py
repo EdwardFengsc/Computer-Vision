@@ -32,7 +32,7 @@ def cross_correlation_2d(img, kernel):
         i_height,i_width,i_rgb=img.shape
     #operation variant
     cross_corr_img_operation=np.zeros((i_height+k_height-1,i_width+k_width-1,i_rgb),dtype=img.dtype)
-    cross_corr_img_operation[(k_height-1)/2:(k_heigth-1)/2+i_height,(k_width-1)/2:(k-width-1)/2+i_width]=img
+    cross_corr_img_operation[(k_height-1)/2:(k_height-1)/2+i_height,(k_width-1)/2:(k-width-1)/2+i_width]=img
     #return variant
     cross_corr_img_save=np.zeros(img.shape)
     #doing cross_correlation operation
@@ -84,7 +84,7 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-    gb_kernel=np.zeros((heigth,width))
+    gb_kernel=np.zeros((height,width))
     for i in range(height):
         for j in range(width):
             gb_kernel[i,j]=1/(2*np.pi*sigma**2)*np.exp(-((i-(height-1)/2)**2+(j-(width-1)/2)**2)/(2*sigma**2))
