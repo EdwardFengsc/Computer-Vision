@@ -24,9 +24,6 @@ def cross_correlation_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    # TODO-BLOCK-BEGIN
-    raise Exception("TODO in hybrid.py not implemented")
-    # TODO-BLOCK-END
    #kernel and image's information
     k_height,k_width=kernel.shape
     cross_corr_save=np.zeros(img.shape) #return variant
@@ -59,9 +56,6 @@ def convolve_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    # TODO-BLOCK-BEGIN
-    raise Exception("TODO in hybrid.py not implemented")
-    # TODO-BLOCK-END
     conv_kernel=np.fliplr(np.flipud(kernel))
     return cross_correlation_2d(img,conv_kernel)
 
@@ -80,9 +74,6 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-    # TODO-BLOCK-BEGIN
-    raise Exception("TODO in hybrid.py not implemented")
-    # TODO-BLOCK-END
     x=np.arange(-(width-1)/2,(width-1)/2+1,1.0)**2
     y=np.arange(-(height-1)/2,(height-1)/2+1,1.0)**2
     coefficient=np.sqrt(1/(2*np.pi*sigma**2))
@@ -101,9 +92,6 @@ def low_pass(img, sigma, size):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    # TODO-BLOCK-BEGIN
-    raise Exception("TODO in hybrid.py not implemented")
-    # TODO-BLOCK-END
     lp_kernel=gaussian_blur_kernel_2d(sigma,size,size)
     return convolve_2d(img,lp_kernel)
 
@@ -116,9 +104,6 @@ def high_pass(img, sigma, size):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    # TODO-BLOCK-BEGIN
-    raise Exception("TODO in hybrid.py not implemented")
-    # TODO-BLOCK-END
     return img-low_pass(img,sigma,size)
 
 def create_hybrid_image(img1, img2, sigma1, size1, high_low1, sigma2, size2,
