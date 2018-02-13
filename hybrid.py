@@ -81,16 +81,13 @@ def gaussian_blur_kernel_2d(sigma, width, height):
 #             gb_kernel[i,j]=1/(2*np.pi*sigma)*np.exp(-((i-(height-1)/2)**2+(j-(width-1)/2)**2)/(2*sigma**2))
 #     return gb_kernel
     
-    
-    offset_x, offset_y = (width - 1) / 2, (height - 1) / 2
-    x = np.arange(-(width-1)/2, (width-1)/2+1,1.0)**2
-    y = np.arange(-(height-1)/2,(height-1)/2+1,1.0)**2
-    coefficient = 1/(2*np.pi *sigma**2)
-    gaussian_x = np.sqrt(coefficient) * np.exp(-x / (2 * sigma * sigma))
-    gaussian_y = np.sqrt(coefficient) * np.exp(-y / (2 * sigma * sigma))
-    # in two dimensions, it is the product of gaussian_x and gaussian_y, one in each dimension
-    kernel = np.outer(gaussian_x, gaussian_y) / (np.sum(gaussian_x) * np.sum(gaussian_y))
-    return kernel
+    x=np.arange(-(width-1)/2, (width-1)/2+1,1.0)**2
+    y=np.arange(-(height-1)/2,(height-1)/2+1,1.0)**2
+    coefficient = np.sqrt(1/(2*np.pi *sigma**2))
+    g_x=coefficient*np.exp(-x / (2 * sigma * sigma))
+    g_y=coefficient*np.exp(-y / (2 * sigma * sigma))
+    gb_kernel = np.outer(g_x, g_y) / (np.sum(g_x) * np.sum(g_y))
+    return gb_kernel
      
 
 def low_pass(img, sigma, size):
