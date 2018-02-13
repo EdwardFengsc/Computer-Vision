@@ -36,7 +36,8 @@ def cross_correlation_2d(img, kernel):
     cross_corr_img_operation=np.zeros((i_height+k_height-1,i_width+k_width-1,i_rgb),dtype=img.dtype)
     cross_corr_img_operation[(k_height-1)/2:(k_height-1)/2+i_height,(k_width-1)/2:(k_width-1)/2+i_width]=img
     #return variant
-    cross_corr_img_save=np.zeros(img.shape)
+    cross_corr_img_save=np.empty(img.shape)
+#     cross_corr_img_save=np.zeros(img.shape)
     #doing cross_correlation operation
     for i in range(i_height):
         for j in range(i_width):
