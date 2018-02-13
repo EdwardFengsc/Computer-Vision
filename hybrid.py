@@ -5,22 +5,6 @@ sys.path.append('/Users/kb/bin/opencv-3.1.0/build/lib/')
 import cv2
 import numpy as np
 
-def img2col(img, kernel):
-    m, n = kernel.shape
-    k1, k2 = (m - 1) / 2, (n - 1) / 2
-    a, b = img.shape
-    img_padd = np.zeros((a + 2 * k1, b + 2 * k2))
-    img_padd[k1: k1 + a, k2: k2 + b] = img
-    ret = np.zeros((a*b,m*n))
-    index = 0
-    for i in range(a):
-        for j in range(b):
-            grid = img_padd[i:2*k1+i+1,j:2*k2+j+1].reshape((m*n,))
-            ret[index] = grid
-            index += 1
-    kernel_t = kernel.reshape((m*n,))
-    return np.dot(ret,kernel_t).reshape((a,b))
-
 
 def cross_correlation_2d(img, kernel):
     '''Given a kernel of arbitrary m x n dimensions, with both m and n being
@@ -41,14 +25,24 @@ def cross_correlation_2d(img, kernel):
         height and the number of color channels)
     '''
 
-    if len(img.shape) == 2:
-        return img2col(img, kernel)
+    k_height, k_width=kernel.shape
+    if len(img.shape)==2:
+        i_height,i_width=img.shape
+        i_rgb=1
+        img=np.expand_dims(img,axis=2)
     else:
-        a,b,c = img.shape
-        ret = np.zeros((a,b,c))
-        for i in range(c):
-            ret[:,:,i] = img2col(img[:,:,i], kernel)
-        return ret
+        i_height,i_width,i_rgb=img.shape
+    #operation variant
+    cross_corr_img_operation=np.zeros((i_height+k_height-1,i_width+k_width-1,i_rgb),dtype=img.dtype)
+    cross_corr_img_operation[(k_height-1)/2:(k_height-1)/2+i_height,(k_width-1)/2:(k_width-1)/2+i_width]=img
+    #return variant
+    cross_corr_img_save=np.zeros(img.shape)
+    #doing cross_correlation operation
+    for i in range(i_height):
+        for j in range(i_width):
+            cross_corr_img_save[i,j]=np.dot(np.reshape(cross_corr_img_operation[i:i+k_height,j:j+k_width],
+                                                       (k_height*k_width,i_rgb)),kernel.reshape(-1))
+    return cross_corr_img_save
 
 def convolve_2d(img, kernel):
     '''Use cross_correlation_2d() to carry out a 2D convolution.
