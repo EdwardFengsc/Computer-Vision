@@ -48,8 +48,8 @@ def cross_correlation_2d(img, kernel):
     matrix = k_height * k_width
     kernel = kernel.reshape(-1)
     #calculate the output image
-    for i in xrange(width):
-        for j in xrange(height):
+    for i in xrange(i_width):
+        for j in xrange(i_height):
             cross_image = np.reshape(newpad[j:j+k_height, i:i+k_width], (matrix, i_rgb))
             output[j, i] = np.dot(kernel, cross_image)
 
