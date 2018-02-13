@@ -83,8 +83,8 @@ def gaussian_blur_kernel_2d(sigma, width, height):
     
     
     offset_x, offset_y = (width - 1) / 2, (height - 1) / 2
-    x = np.arange(-(width-1)/2, (width-1)/2+1)**2
-    y = np.arange(-(height - 1)/2,(height-1)/2+1)**2
+    x = np.arange(-(width-1)/2, (width-1)/2+1,1)**2
+    y = np.arange(-(height-1)/2,(height-1)/2+1,1)**2
     coefficient = 1/(2*np.pi *sigma**2)
     gaussian_x = np.sqrt(coefficient) * np.exp(-x / (2 * sigma * sigma))
     gaussian_y = np.sqrt(coefficient) * np.exp(-y / (2 * sigma * sigma))
