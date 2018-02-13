@@ -51,9 +51,9 @@ def cross_correlation_2d(img, kernel):
     for i in xrange(i_width):
         for j in xrange(i_height):
             cross_image = np.reshape(newpad[j:j+k_height, i:i+k_width], (matrix, i_rgb))
-            output[j, i] = np.dot(kernel, cross_image)
+            cross_corr_save[j, i] = np.dot(kernel, cross_image)
 
-    return output
+    return cross_corr_save
 
 def convolve_2d(img, kernel):
     '''Use cross_correlation_2d() to carry out a 2D convolution.
