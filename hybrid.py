@@ -43,8 +43,8 @@ def cross_correlation_2d(img, kernel):
     #calculate the output image
     for i in xrange(i_width):
         for j in xrange(i_height):
-            cross_image = np.reshape(cross_corr_operation[j:j+k_height, i:i+k_width], (k_height * k_width, i_rgb))
-            cross_corr_save[j, i] = np.dot(kernel.reshape(-1), cross_image)
+#             cross_image = np.reshape(cross_corr_operation[j:j+k_height, i:i+k_width], (k_height * k_width, i_rgb))
+            cross_corr_save[j, i] = np.dot(kernel.reshape(-1), np.reshape(cross_corr_operation[j:j+k_height, i:i+k_width], (k_height * k_width, i_rgb)))
 
     return cross_corr_save
 
