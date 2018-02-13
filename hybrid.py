@@ -26,13 +26,15 @@ def cross_correlation_2d(img, kernel):
     '''
 
     k_height, k_width=kernel.shape
-    if len(img.shape)==3:
-        i_height,i_width,i_rgb=img.shape
-
-    else:
+    if len(img.shape)==2:
         i_height,i_width=img.shape
         i_rgb=1
         img=np.expand_dims(img,axis=2)
+        
+
+    else:
+        i_height,i_width,i_rgb=img.shape
+
         
     #operation variant
     cross_corr_img_operation=np.zeros((i_height+k_height-1,i_width+k_width-1,i_rgb),dtype=img.dtype)
@@ -43,8 +45,8 @@ def cross_correlation_2d(img, kernel):
     #doing cross_correlation operation
     for i in range(i_height):
         for j in range(i_width):
-            cross_corr_img_save[i,j]=np.dot(np.reshape(cross_corr_img_operation[i:i+k_height,j:j+k_width],
-                                                       (k_height*k_width,i_rgb)),kernel.reshape(-1))
+            cross_corr_img_save[i,j]=np.dot(kernel.reshape(-1),np.reshape(cross_corr_img_operation[i:i+k_height,j:j+k_width],
+                                                       (k_height*k_width,i_rgb)))
     return cross_corr_img_save
 
 def convolve_2d(img, kernel):
