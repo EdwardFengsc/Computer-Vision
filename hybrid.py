@@ -24,8 +24,7 @@ def cross_correlation_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-
-       m, n = kernel.shape
+    m, n = kernel.shape
 
     output = np.empty(img.shape)
 
