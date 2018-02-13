@@ -26,12 +26,14 @@ def cross_correlation_2d(img, kernel):
     '''
 
     k_height, k_width=kernel.shape
-    if len(img.shape)==2:
+    if len(img.shape)==3:
+        i_height,i_width,i_rgb=img.shape
+
+    else:
         i_height,i_width=img.shape
         i_rgb=1
         img=np.expand_dims(img,axis=2)
-    else:
-        i_height,i_width,i_rgb=img.shape
+        
     #operation variant
     cross_corr_img_operation=np.zeros((i_height+k_height-1,i_width+k_width-1,i_rgb),dtype=img.dtype)
     cross_corr_img_operation[(k_height-1)/2:(k_height-1)/2+i_height,(k_width-1)/2:(k_width-1)/2+i_width]=img
