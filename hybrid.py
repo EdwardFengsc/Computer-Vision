@@ -25,24 +25,35 @@ def cross_correlation_2d(img, kernel):
         height and the number of color channels)
     '''
 
-    k_height, k_width=kernel.shape
-    if len(img.shape)==2:
-        i_height,i_width=img.shape
-        i_rgb=1
-        img=np.expand_dims(img,axis=2)
+    m, n = kernel.shape
+
+    output = np.empty(img.shape)
+
+    # keep the image into 3 dimensions
+    if len(img.shape) == 3:
+        height, width, channel = img.shape
     else:
-        i_height,i_width,i_rgb=img.shape
-    #operation variant
-    cross_corr_img_operation=np.zeros((i_height+k_height-1,i_width+k_width-1,i_rgb),dtype=img.dtype)
-    cross_corr_img_operation[(k_height-1)/2:(k_height-1)/2+i_height,(k_width-1)/2:(k_width-1)/2+i_width]=img
-    #return variant
-    cross_corr_img_save=np.zeros(img.shape)
-    #doing cross_correlation operation
-    for i in range(i_height):
-        for j in range(i_width):
-            cross_corr_img_save[i,j]=np.dot(np.reshape(cross_corr_img_operation[i:i+k_height,j:j+k_width],
-                                                       (k_height*k_width,i_rgb)),kernel.reshape(-1))
-    return cross_corr_img_save
+	height, width = img.shape
+	channel = 1
+        img = np.expand_dims(img, axis=2)
+
+    #set up a new workplace adding size of kernels and images
+    newpad = np.zeros(( m + height - 1, n + width - 1,channel), dtype=img.dtype)
+    
+    m1 = (m - 1) / 2
+    n1 = (n - 1) / 2
+    # put the image into the workplace
+    newpad[m1:m1+height, n1:n1+width] = img
+
+    matrix = m * n
+    kernel = kernel.reshape(-1)
+    #calculate the output image
+    for i in xrange(width):
+        for j in xrange(height):
+            cross_image = np.reshape(newpad[j:j+m, i:i+n], (matrix, channel))
+            output[j, i] = np.dot(kernel, cross_image)
+
+    return output
 
 def convolve_2d(img, kernel):
     '''Use cross_correlation_2d() to carry out a 2D convolution.
