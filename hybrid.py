@@ -56,7 +56,7 @@ def convolve_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    conv_kernel=np.fliplr(np.flipud(kernel))
+    =npconv_kernel.fliplr(np.flipud(kernel))
     return cross_correlation_2d(img,conv_kernel)
 
 def gaussian_blur_kernel_2d(sigma, width, height):
@@ -74,15 +74,22 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-    offset_x, offset_y = (width - 1) / 2, (height - 1) / 2
-    x = np.arange(-offset_x, offset_x + 1, 1.0) ** 2
-    y = np.arange(-offset_y, offset_y + 1, 1.0) ** 2
-    coefficient = 1 / (2 * sigma * sigma * np.pi)
-    gaussian_x = np.sqrt(coefficient) * np.exp(-x / (2 * sigma * sigma))
-    gaussian_y = np.sqrt(coefficient) * np.exp(-y / (2 * sigma * sigma))
-    # in two dimensions, it is the product of gaussian_x and gaussian_y, one in each dimension
-    kernel = np.outer(gaussian_x, gaussian_y) / (np.sum(gaussian_x) * np.sum(gaussian_y))
-    return kernel
+    gb_kernel=np.zeros((height,width))
+    for i in range(height):
+        for j in range(width):
+            gb_kernel[i,j]=1/(2*np.pi*sigma)*np.exp(-((i-(height-1)/2)**2+(j-(width-1)/2)**2)/(2*sigma**2))
+    return gb_kernel
+    
+    
+#     offset_x, offset_y = (width - 1) / 2, (height - 1) / 2
+#     x = np.arange(-offset_x, offset_x + 1, 1.0) ** 2
+#     y = np.arange(-offset_y, offset_y + 1, 1.0) ** 2
+#     coefficient = 1 / (2 * sigma * sigma * np.pi)
+#     gaussian_x = np.sqrt(coefficient) * np.exp(-x / (2 * sigma * sigma))
+#     gaussian_y = np.sqrt(coefficient) * np.exp(-y / (2 * sigma * sigma))
+#     # in two dimensions, it is the product of gaussian_x and gaussian_y, one in each dimension
+#     kernel = np.outer(gaussian_x, gaussian_y) / (np.sum(gaussian_x) * np.sum(gaussian_y))
+#     return kernel
 
 def low_pass(img, sigma, size):
     '''Filter the image as if its filtered with a low pass filter of the given
