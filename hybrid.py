@@ -14,7 +14,7 @@ def cross_correlation_2d(img, kernel):
 	correlation_img=np.zeros((img.shape[0],img.shape[1]),dtype=float)
 	
 	if img_d==2:
-    	img=img.reshape((img.shape[0],img.shape[1],1))
+		img=img.reshape((img.shape[0],img.shape[1],1))
     
     for d in range(img.shape[2]):
     	img_gray=img[:,:,d]
