@@ -90,7 +90,7 @@ def gaussian_blur_kernel_2d(sigma, width, height):
 #     # in two dimensions, it is the product of gaussian_x and gaussian_y, one in each dimension
 #     kernel = np.outer(gaussian_x, gaussian_y) / (np.sum(gaussian_x) * np.sum(gaussian_y))
 #     return kernel
-     w_h=int((width-1)/2)
+         w_h=int((width-1)/2)
 	 h_h=int((height-1)/2)
 	 pi=np.pi
 	
