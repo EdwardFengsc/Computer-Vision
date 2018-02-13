@@ -74,8 +74,7 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-
-        w_h=int((width-1)/2)
+ 	w_h=int((width-1)/2)
 	h_h=int((height-1)/2)
 	pi=np.pi
 	
@@ -84,6 +83,7 @@ def gaussian_blur_kernel_2d(sigma, width, height):
 	GaussianMatrix=1/(2*pi*sigma**2)*np.exp(-a/(2*sigma**2))
 
 	return GaussianMatrix
+
 #     gb_kernel=np.zeros((height,width))
 #     for i in range(height):
 #         for j in range(width):
