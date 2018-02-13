@@ -50,11 +50,6 @@ def cross_correlation_2d(img, kernel):
             ret[:,:,i] = img2col(img[:,:,i], kernel)
         return ret
 
-def kernel_flip(kernel):
-    '''A helper method of convolve_2d
-    '''
-    return np.fliplr(np.flipud(kernel))
-
 def convolve_2d(img, kernel):
     '''Use cross_correlation_2d() to carry out a 2D convolution.
 
@@ -68,7 +63,8 @@ def convolve_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    return cross_correlation_2d(img, kernel_flip(kernel))
+    conv_kernel=np.fliplr(np.flipud(kernel))
+    return cross_correlation_2d(img,conv_kernel)
 
 def gaussian_blur_kernel_2d(sigma, width, height):
     '''Return a Gaussian blur kernel of the given dimensions and with the given
@@ -104,7 +100,8 @@ def low_pass(img, sigma, size):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    return convolve_2d(img, gaussian_blur_kernel_2d(sigma, size, size))
+    lp_kernel=gaussian_blur_kernel_2d(sigma,size,size)
+    return convolve_2d(img,lp_kernel)
 
 def high_pass(img, sigma, size):
     '''Filter the image as if its filtered with a high pass filter of the given
@@ -115,7 +112,7 @@ def high_pass(img, sigma, size):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    return img - low_pass(img, sigma, size)
+    return img-low_pass(img,sigma,size)
 
 def create_hybrid_image(img1, img2, sigma1, size1, high_low1, sigma2, size2,
         high_low2, mixin_ratio):
