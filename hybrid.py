@@ -56,7 +56,7 @@ def convolve_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    conv_kernel=npconv_kernel.fliplr(np.flipud(kernel))
+    conv_kernel=np.fliplr(np.flipud(kernel))
     return cross_correlation_2d(img,conv_kernel)
 
 def gaussian_blur_kernel_2d(sigma, width, height):
