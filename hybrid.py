@@ -84,11 +84,22 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-    gb_kernel=np.zeros((height,width))
-    for i in range(height):
-        for j in range(width):
-            gb_kernel[i,j]=1/(2*np.pi*sigma**2)*np.exp(-((i-(height-1)/2)**2+(j-(width-1)/2)**2)/(2*sigma**2))
-    return gb_kernel
+    x, y = width/2, height/2
+    x1,y1 = x+1, y+1
+    X = np.arange(-x,x1, 1.0)**2
+    Y = np.arange(-y,y1, 1.0)**2
+
+    X = np.exp(-X/(2 * sigma * sigma))
+    Y = np.exp(-Y/(2 * sigma * sigma)) / (2 * sigma * sigma * np.pi)
+    output = np.outer(X,Y)
+    
+    normalize = np.sum(Y) * np.sum(X)
+    return output / normalize
+#     gb_kernel=np.zeros((height,width))
+#     for i in range(height):
+#         for j in range(width):
+#             gb_kernel[i,j]=1/(2*np.pi*sigma**2)*np.exp(-((i-(height-1)/2)**2+(j-(width-1)/2)**2)/(2*sigma**2))
+#     return gb_kernel
     
             
     # TODO-BLOCK-BEGIN
