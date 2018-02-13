@@ -24,32 +24,33 @@ def cross_correlation_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    m, n = kernel.shape
+    k_height, k_width=kernel.shape
 
-    output = np.empty(img.shape)
+    cross_corr_save=np.empty(img.shape)
 
     # keep the image into 3 dimensions
-    if len(img.shape) == 3:
-        height, width, channel = img.shape
+    if len(img.shape)==2:
+        i_height,i_width = img.shape
+        i_rgb=1
+        img=np.expand_dims(img,axis=2)
     else:
-        height, width = img.shape
-        channel = 1
-        img = np.expand_dims(img, axis=2)
+        i_height,i_width,i_rgb=img.shape
+        
 
     #set up a new workplace adding size of kernels and images
-    newpad = np.zeros(( m + height - 1, n + width - 1,channel), dtype=img.dtype)
+    newpad = np.zeros(( k_height + k_height1height - 1, k_width + i_width - 1,i_rgb), dtype=img.dtype)
     
-    m1 = (m - 1) / 2
-    n1 = (n - 1) / 2
+    k_height1 = (k_height - 1) / 2
+    k_width1 = (k_width - 1) / 2
     # put the image into the workplace
-    newpad[m1:m1+height, n1:n1+width] = img
+    newpad[k_height1:k_height1+i_height, k_width1:k_width1+i_width] = img
 
-    matrix = m * n
+    matrix = k_height * k_width
     kernel = kernel.reshape(-1)
     #calculate the output image
     for i in xrange(width):
         for j in xrange(height):
-            cross_image = np.reshape(newpad[j:j+m, i:i+n], (matrix, channel))
+            cross_image = np.reshape(newpad[j:j+k_height, i:i+k_width], (matrix, i_rgb))
             output[j, i] = np.dot(kernel, cross_image)
 
     return output
