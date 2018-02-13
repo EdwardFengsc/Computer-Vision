@@ -38,7 +38,7 @@ def cross_correlation_2d(img, kernel):
     k_height1 = (k_height - 1) / 2
     k_width1 = (k_width - 1) / 2
     # put the image into the workplace
-    cross_corr_operation[(k_height - 1) / 2:(k_height - 1) / 2+i_height, k_width1:k_width1+i_width] = img
+    cross_corr_operation[k_height1:k_height1+i_height, k_width1:k_width1+i_width] = img
 
     matrix = k_height * k_width
     kernel = kernel.reshape(-1)
