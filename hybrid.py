@@ -25,6 +25,7 @@ def cross_correlation_2d(img, kernel):
         height and the number of color channels)
     '''
     k_height, k_width=kernel.shape
+    cross_corr_save=np.zeros(img.shape)
     # keep the image into 3 dimensions
     if len(img.shape)==2:
         i_height,i_width = img.shape
@@ -34,7 +35,7 @@ def cross_correlation_2d(img, kernel):
         i_height,i_width,i_rgb=img.shape
     #set up a new workplace adding size of kernels and images
     cross_corr_operation = np.zeros(( k_height + i_height - 1, k_width + i_width - 1,i_rgb), dtype=img.dtype)
-    cross_corr_save=np.zeros(img.shape)
+    
     k_height1 = (k_height - 1) / 2
     k_width1 = (k_width - 1) / 2
     # put the image into the workplace
