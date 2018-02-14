@@ -1,4 +1,4 @@
-# Computer-Vision
+# Computer-Visionc HW1
 {
   "right_size": 12, 
   "left_sigma": 4.9, 
