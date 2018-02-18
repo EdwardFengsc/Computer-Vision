@@ -1,10 +1,8 @@
 import sys
 sys.path.append('/Users/kb/bin/opencv-3.1.0/build/lib/')
-#sys.path.append('/usr/local/opt/opencv3/lib/python2.7/site-packages')
 
 import cv2
 import numpy as np
-
 
 def cross_correlation_2d(img, kernel):
     '''Given a kernel of arbitrary m x n dimensions, with both m and n being
@@ -24,24 +22,27 @@ def cross_correlation_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-   #kernel and image's information
-    k_height,k_width=kernel.shape
-    cross_corr_save=np.zeros(img.shape) #return variant
-    if len(img.shape)==2:
-        i_height,i_width=img.shape
-        i_rgb=1
-        img=np.expand_dims(img,axis=2)
-    else:
-        i_height,i_width,i_rgb=img.shape
-    cross_corr_operation=np.zeros((k_height+i_height-1,k_width+i_width-1,i_rgb),dtype=img.dtype)    #operation variant
-    cross_corr_operation[(k_height-1)/2:(k_height-1)/2+i_height,(k_width-1)/2:(k_width-1)/2+i_width]=img
-    kernelr=kernel.reshape(-1)
-    #doing cross_correlation operation
-    for i in range(i_height):
-        for j in range(i_width):
-            cross_corr_save[i,j]=np.dot(kernelr,np.reshape(cross_corr_operation[i:i+k_height,j:j+k_width],
-                                                           (k_height * k_width,i_rgb)))
-    return cross_corr_save
+
+    kernel_width = kernel.shape[0]
+    kernel_height = kernel.shape[1]
+
+    padImg = np.pad(img, ((kernel_width - 1) / 2, (kernel_height - 1 ) / 2), 'constant')
+
+    if img.ndim == 2:
+        newImg = np.zeros(img.shape)
+        for i in range(padImg.shape[0] - kernel_width + 1):
+            for j in range(padImg.shape[1] - kernel_height + 1):
+                newImg[i,j] = np.sum(padImg[i:i+kernel_width, j:j+kernel_height]*kernel)
+        return newImg
+
+    if img.ndim == 3:
+        newImg = np.zeros(img.shape)
+        for k in range(3):
+            for i in range(padImg.shape[0] - kernel_width + 1):
+                for j in range(padImg.shape[1] - kernel_height + 1):
+                    newImg[i,j,k] = np.sum(padImg[i:i+kernel_width, j:j+kernel_height, k]*kernel)
+        return newImg
+
 
 def convolve_2d(img, kernel):
     '''Use cross_correlation_2d() to carry out a 2D convolution.
@@ -56,8 +57,7 @@ def convolve_2d(img, kernel):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    conv_kernel=np.fliplr(np.flipud(kernel))
-    return cross_correlation_2d(img,conv_kernel)
+    return cross_correlation_2d(img, kernel[::-1, ::-1])
 
 def gaussian_blur_kernel_2d(sigma, width, height):
     '''Return a Gaussian blur kernel of the given dimensions and with the given
@@ -74,14 +74,19 @@ def gaussian_blur_kernel_2d(sigma, width, height):
         Return a kernel of dimensions width x height such that convolving it
         with an image results in a Gaussian-blurred image.
     '''
-    x=np.arange(-(width-1)/2,(width-1)/2+1,1.0)**2
-    y=np.arange(-(height-1)/2,(height-1)/2+1,1.0)**2
-    coefficient=np.sqrt(1/(2*np.pi*sigma**2))
-    g_x=coefficient*np.exp(-x/(2*sigma*sigma))
-    g_y=coefficient*np.exp(-y/(2*sigma*sigma))
-    gb_kernel=np.outer(g_x,g_y)/(np.sum(g_x)*np.sum(g_y))
-    return gb_kernel
-     
+
+    width_mean = (width - 1) / 2
+    height_mean = (height -1) / 2
+
+    double kernel[width][height];
+    for (int x = 0; x < width; ++x)
+        for (int y = 0; y < height; ++y) {
+            kernel[x][y] = np.exp( -(np.power((width-width_mean), 2.0) + np.power((height-height_mean),2.0)) / float ( 2 * (sigma ** 2)) )
+        }
+
+    kernel = kernel / kernel.sum()
+
+    return kernel
 
 def low_pass(img, sigma, size):
     '''Filter the image as if its filtered with a low pass filter of the given
@@ -92,8 +97,9 @@ def low_pass(img, sigma, size):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    lp_kernel=gaussian_blur_kernel_2d(sigma,size,size)
-    return convolve_2d(img,lp_kernel)
+
+    lowPassImg = convolve_2d(img, gaussian_blur_kernel_2d(sigma, size, size))
+    return lowPassImg
 
 def high_pass(img, sigma, size):
     '''Filter the image as if its filtered with a high pass filter of the given
@@ -104,7 +110,9 @@ def high_pass(img, sigma, size):
         Return an image of the same dimensions as the input image (same width,
         height and the number of color channels)
     '''
-    return img-low_pass(img,sigma,size)
+
+    newImg = img - low_pass(img, sigma, size)
+    return newImg
 
 def create_hybrid_image(img1, img2, sigma1, size1, high_low1, sigma2, size2,
         high_low2, mixin_ratio):
