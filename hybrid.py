@@ -25,22 +25,36 @@ def cross_correlation_2d(img, kernel):
 
     kernel_width = kernel.shape[0]
     kernel_height = kernel.shape[1]
-
-    padImg = np.pad(img, ((kernel_width - 1) / 2, (kernel_height - 1 ) / 2), 'constant')
+    kernel_width_mean = (kernel_width - 1 ) / 2
+    kernel_height_mean = (kernel_height - 1 ) / 2
 
     if img.ndim == 2:
+	padImg = np.zeros((img.shape[0]+kernel_width-1,img.shape[1]+kernel_height-1))
+        padImg[kernel_width_mean:kernel_width_mean+img.shape[0],kernel_height_mean:kernel_height_mean+img.shape[1]] = img
+
         newImg = np.zeros(img.shape)
-        for i in range(padImg.shape[0] - kernel_width + 1):
-            for j in range(padImg.shape[1] - kernel_height + 1):
-                newImg[i,j] = np.sum(padImg[i:i+kernel_width, j:j+kernel_height]*kernel)
+        for i in range(img.shape[0]):
+            for j in range(img.shape[1]):
+		sum = 0
+		for m in range(kernel_width):
+	    	    for n in range(kernel_height):
+			sum += padImg[i+m, j+n] * kernel[m][n]
+                newImg[i,j] = sum
         return newImg
 
     if img.ndim == 3:
+	padImg = np.zeros((img.shape[0]+kernel_width-1,img.shape[1]+kernel_height-1,3))
+        padImg[kernel_width_mean:kernel_width_mean+img.shape[0],kernel_height_mean:kernel_height_mean+img.shape[1]] = img
+
         newImg = np.zeros(img.shape)
         for k in range(3):
-            for i in range(padImg.shape[0] - kernel_width + 1):
-                for j in range(padImg.shape[1] - kernel_height + 1):
-                    newImg[i,j,k] = np.sum(padImg[i:i+kernel_width, j:j+kernel_height, k]*kernel)
+            for i in range(img.shape[0]):
+                for j in range(img.shape[1]):
+                    sum = 0
+		    for m in range(kernel_width):
+	    	        for n in range(kernel_height):
+			    sum += padImg[i+m, j+n,k] * kernel[m][n]
+                    newImg[i,j,k] = sum
         return newImg
 
 
@@ -78,11 +92,10 @@ def gaussian_blur_kernel_2d(sigma, width, height):
     width_mean = (width - 1) / 2
     height_mean = (height -1) / 2
 
-    double kernel[width][height];
-    for (int x = 0; x < width; ++x)
-        for (int y = 0; y < height; ++y) {
-            kernel[x][y] = np.exp( -(np.power((width-width_mean), 2.0) + np.power((height-height_mean),2.0)) / float ( 2 * (sigma ** 2)) )
-        }
+    kernel = np.zeros((width, height))
+    for x in range(width):
+        for y in range(height):
+            kernel[x][y] = np.exp( -(np.power((x-width_mean), 2.0) + np.power((y-height_mean),2.0)) / float ( 2 * (sigma ** 2)) )
 
     kernel = kernel / kernel.sum()
 
